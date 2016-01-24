@@ -54,7 +54,8 @@ public class Main : MonoBehaviour {
     public GameObject lastMove;
     // Update is called once per frame
     void Update () {
-        Frame frame = controller.Frame();
+        Frame frame = new Frame();
+        frame = controller.Frame();
         GestureList gestures = frame.Gestures(lastFrame);
         lastFrame = frame;
         /*
@@ -106,7 +107,7 @@ public class Main : MonoBehaviour {
                                 if (gameOver == 1)
                                 {
                                     Destroy(objects);
-                                    objects = GameObject.Find("Objects");
+                                    if (objects != null) objects = GameObject.Find("Objects");
                                     gameOver = 0;
                                     winStr = "";
                                 }
@@ -259,7 +260,7 @@ public class Main : MonoBehaviour {
     public string winStr = "";
     void OnGUI()
     {
-        GUI.Box(new Rect(50, 50, 100, 100), "Current Player: " + curPlayer + "\n"
+        GUI.Box(new Rect(60, 60, 120, 120), "Current Player: " + curPlayer + "\n"
             + xStr + 
             "\n" + yStr + "\n" + zStr + "\n" + winStr);
     }
