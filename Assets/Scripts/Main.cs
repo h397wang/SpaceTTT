@@ -4,23 +4,27 @@ using Leap;
 
 public class Main : MonoBehaviour {
 
+    public static GameLogic logic = new GameLogic();
+    int[,,] board = new int[4, 4, 4];
     Controller controller;
     GameObject cube;
     GameObject sphere;
     GameObject box;
+    GameObject objects;
     GameObject handController;
-    int[,,] boardArray = new int[4, 4, 4];
     public string xStr;
     public string yStr;
     public string zStr;
 
     public int curPlayer = 1;
+    public int gameOver = 0;
 
 
     // Use this for initialization
     void Start () {
         cube = GameObject.Find("Cube");
         box = GameObject.Find("Box");
+        objects = GameObject.Find("Objects");
         sphere = GameObject.Find("Sphere");
         handController = GameObject.Find("HandController");
         controller = new Controller();
@@ -41,6 +45,7 @@ public class Main : MonoBehaviour {
             }
         }
         */
+
     }
 
 
@@ -98,20 +103,42 @@ public class Main : MonoBehaviour {
                             Gesture gesture = gestures[i];
                             if (gesture.Type == Gesture.GestureType.TYPE_KEY_TAP && gesture.Hands[0].IsRight)
                             {
-                                KeyTapGesture tap = new KeyTapGesture(gesture);
-                                /*newCube.transform.position = box.transform.position;
-                                newCube.transform.rotation = box.transform.rotation;
-                                newCube.transform.parent = box.transform;
-                                */
-                                Vector tapPosition = tap.Position;
-                                Vector3 correctedPos = handController.transform.TransformPoint(tapPosition.ToUnityScaled());
-                                //correctedPos.y = correctedPos.y - 1.5f;
-                                //correctedPos.z = correctedPos.z - 0.3f;
-                                //newCube.transform.position = SnapToGrid(correctedPos);
-                                snapPos = SnapToGrid(correctedPos);
-                                if (snapPos.x > 3f || snapPos.y > 3f || snapPos.z > 3f)
-                                SpawnObject(curPlayer, snapPos);
-                                Vector3 arrayPos = UnityToArrayIndex(snapPos);
+                                if (gameOver == 1)
+                                {
+                                    Destroy(objects);
+                                    objects = GameObject.Find("Objects");
+                                    gameOver = 0;
+                                    winStr = "";
+                                }
+                                else
+                                {
+
+                                    KeyTapGesture tap = new KeyTapGesture(gesture);
+                                    /*newCube.transform.position = box.transform.position;
+                                    newCube.transform.rotation = box.transform.rotation;
+                                    newCube.transform.parent = box.transform;
+                                    */
+                                    Vector tapPosition = tap.Position;
+                                    Vector3 correctedPos = handController.transform.TransformPoint(tapPosition.ToUnityScaled());
+                                    //correctedPos.y = correctedPos.y - 1.5f;
+                                    //correctedPos.z = correctedPos.z - 0.3f;
+                                    //newCube.transform.position = SnapToGrid(correctedPos);
+                                    snapPos = SnapToGrid(correctedPos);
+                                    if (snapPos.x > 3f || snapPos.y > 3f || snapPos.z > 3f)
+                                    {
+                                        Undo(lastMove);
+                                        if (curPlayer == 1)
+                                        {
+                                            Debug.Log("hello");
+                                            curPlayer = 2;
+                                        }
+                                        else
+                                            curPlayer = 1;
+                                    }
+                                    else
+                                        SpawnObject(curPlayer, snapPos);
+                                    Vector3 arrayPos = UnityToArrayIndex(snapPos);
+                                }
                             }
                         }
 
@@ -119,7 +146,6 @@ public class Main : MonoBehaviour {
                         currentPos = handController.transform.TransformPoint(tipPos.ToUnityScaled());
                         snapPos = SnapToGrid(currentPos);
                         Vector3 gridPos = UnityToArrayIndex(snapPos);
-                        Debug.Log(snapPos + "   |   " + gridPos);
                         xStr = "X: " + ((int)gridPos.x).ToString();
                         yStr = "Y: " + ((int)gridPos.y).ToString();
                         zStr = "Z: " + ((int)gridPos.z).ToString();
@@ -137,18 +163,40 @@ public class Main : MonoBehaviour {
     void SpawnObject(int player, Vector3 position)
     {
         GameObject newObject;
+        Vector3 arrayPos = UnityToArrayIndex(snapPos);
         if (player == 1)
         {
+            int x = (int)arrayPos.x;
+            int y = (int)arrayPos.y;
+            int z = (int)arrayPos.z;
             newObject = Instantiate(cube);
+            if (!logic.insertMark(curPlayer, x, y, z))
+                return;
+            Debug.Log(logic.board[0, 0, 0]);
+            if (logic.isWin(1))
+            {
+                Debug.Log("Player 1 Wins");
+                Restart();
+            }
             curPlayer = 2;
         }
         else
         {
             newObject = Instantiate(sphere);
+            if (!logic.insertMark(2, (int)arrayPos.x, (int)arrayPos.y, (int)arrayPos.z))
+                return;
+            if (logic.isWin(2))
+            {
+                Debug.Log("Player 2 Wins");
+                Restart();
+            }
+
             curPlayer = 1;
         }
-        newObject.transform.parent = box.transform;
+        newObject.transform.parent = objects.transform;
         newObject.transform.position = position;
+        lastMove = newObject;
+
     }
 
     public Vector3 UnityToArrayIndex(Vector3 pv) {
@@ -208,20 +256,24 @@ public class Main : MonoBehaviour {
 
         return newPosition;
     }
-
+    public string winStr = "";
     void OnGUI()
     {
-        GUI.Box(new Rect(50, 50, 50, 50),xStr + 
-            "\n" + yStr + "\n" + zStr);
+        GUI.Box(new Rect(50, 50, 100, 100), "Current Player: " + curPlayer + "\n"
+            + xStr + 
+            "\n" + yStr + "\n" + zStr + "\n" + winStr);
     }
 
     void Undo(GameObject lastObject)
     {
         Destroy(lastObject);
-        if (curPlayer == 1)
-            curPlayer = 2;
-        else
-            curPlayer = 1;
     }
-
+    void Restart()
+    {
+        logic.board = new int[4,4,4];
+        winStr = "Game Over!\n " + curPlayer + " wins!";
+        gameOver = 1;
+        curPlayer = 1;
+        objects = GameObject.Find("Objects");
+    }
 }

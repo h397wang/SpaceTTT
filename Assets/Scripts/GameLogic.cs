@@ -2,17 +2,28 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class GameScript : MonoBehaviour
+public class GameLogic : MonoBehaviour
 {
 
     public int[,,] board = new int[4, 4, 4];
-    public void insertMark(string mark, int x, int y, int z)
+    // Use this for initialization
+    void Start()
     {
-        int intMark;
-        if (mark.Equals("X")) intMark = 1;
-        else if (mark.Equals("O")) intMark = 2;
-        else { Instructions.text = "Mark not detected!"; }
-        board[x, y, z] = intMark;
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+
+    }
+    public bool insertMark(int mark, int x, int y, int z)
+    {
+        if (board[x, y, z] != 1 && board[x, y, z] != 2)
+            board[x, y, z] = mark;
+        else
+            return false;
+        return true;
     }
     public bool isEmpty(int[,,] board)
     {
@@ -28,18 +39,10 @@ public class GameScript : MonoBehaviour
         }
         return true;
     }
-    public bool isWin(string mark)
+    public bool isWin(int mark)
     {
         int sameCount = 0;
-        int intMark;
-
-        if (mark.Equals("X")) intMark = 1;
-        else if (mark.Equals("O")) intMark = 2;
-        else
-        {
-            Instructions.text = "Mark not detected!";
-            return false;
-        }
+        int intMark = mark;
 
         if (!isEmpty(board))
         {
@@ -94,9 +97,9 @@ public class GameScript : MonoBehaviour
                     sameCount = 0;
 
                     //Go through the cells in the x-direction
-                    for (int k = 0; k < 4; k++)
+                    for (int k = 1; k < 4; k++)
                     {
-                        if (board[j, 0, i] != intMark) continue;
+                        if (board[j, k, i] != intMark) continue;
                         sameCount++;
                     }
                     if (sameCount == 3) return true;
