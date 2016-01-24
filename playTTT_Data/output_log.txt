@@ -16,7 +16,7 @@ Platform assembly: C:\Users\phili\Documents\SpaceTTT\playTTT_Data\Managed\UnityE
 Loading C:\Users\phili\Documents\SpaceTTT\playTTT_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
 Platform assembly: C:\Users\phili\Documents\SpaceTTT\playTTT_Data\Managed\LeapCSharp.NET3.5.dll (this message is harmless)
 Loading C:\Users\phili\Documents\SpaceTTT\playTTT_Data\Managed\LeapCSharp.NET3.5.dll into Unity Child Domain
-- Completed reload, in  0.073 seconds
+- Completed reload, in  0.100 seconds
 Platform assembly: C:\Users\phili\Documents\SpaceTTT\playTTT_Data\Managed\System.Core.dll (this message is harmless)
 Platform assembly: C:\Users\phili\Documents\SpaceTTT\playTTT_Data\Managed\System.dll (this message is harmless)
 desktop: 3200x1800 60Hz; virtual: 3200x1800 at 0,0
@@ -24,14 +24,22 @@ desktop: 3200x1800 60Hz; virtual: 3200x1800 at 0,0
 XInput1_3.dll not found. Trying XInput9_1_0.dll instead...
 <RI> Input initialized.
 <RI> Initialized touch support.
-UnloadTime: 1.519746 ms
+UnloadTime: 1.687704 ms
 Setting up 1 worker threads for Enlighten.
-  Thread -> id: 329c -> priority: 1 
-Unloading 6 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 9.382606 ms
+  Thread -> id: 1f8c -> priority: 1 
+Unloading 5 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 9.306077 ms
 
-Unloading 6 unused Assets to reduce memory usage. Loaded Objects now: 1138.
-Total: 0.770032 ms (FindLiveObjects: 0.106328 ms CreateObjectMapping: 0.195724 ms MarkObjects: 0.444275 ms  DeleteObjects: 0.023026 ms)
+Unloading 8 unused Assets to reduce memory usage. Loaded Objects now: 1138.
+Total: 0.833016 ms (FindLiveObjects: 0.106328 ms CreateObjectMapping: 0.227555 ms MarkObjects: 0.451725 ms  DeleteObjects: 0.046052 ms)
+
+0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
 
 0
  
@@ -45,11 +53,51 @@ Total: 0.770032 ms (FindLiveObjects: 0.106328 ms CreateObjectMapping: 0.195724 m
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
 
-hello
+0
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
 
-hello
+0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Player 2 Wins
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+0
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
 

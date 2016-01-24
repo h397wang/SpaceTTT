@@ -29,9 +29,9 @@ public class Main : MonoBehaviour {
         handController = GameObject.Find("HandController");
         controller = new Controller();
         controller.EnableGesture(Gesture.GestureType.TYPE_KEY_TAP);
-        //controller.Config.SetFloat("Gesture.KeyTap.MinDownVelocity", 30.0f);
+        controller.Config.SetFloat("Gesture.KeyTap.MinDownVelocity", 20.0f);
         controller.Config.SetFloat("Gesture.KeyTap.HistorySeconds", 0.2f);
-        //controller.Config.SetFloat("Gesture.KeyTap.MinDistance", 0.6f);
+        controller.Config.SetFloat("Gesture.KeyTap.MinDistance", 1.6f);
 
         /*
         for (int i = 0; i < 4; i++)
@@ -89,8 +89,8 @@ public class Main : MonoBehaviour {
         //Find the current position of the index finger and display it in a text box
 
         HandList hands = frame.Hands;
-        Vector3 currentPos;
-        Vector tipPos;
+        Vector3 currentPos; 
+        Vector tipPos; // position of index finger tip
         foreach (Hand hand in hands)
         {
             if (hand.IsRight)
@@ -106,9 +106,13 @@ public class Main : MonoBehaviour {
                             {
                                 if (gameOver == 1)
                                 {
-                                    Destroy(objects);
-                                    if (objects != null) objects = GameObject.Find("Objects");
+                                    foreach (Transform child in objects.transform)
+                                        Destroy(child.gameObject);
+                                    logic.reInitializeArray();
+                                    //if (objects != null) 
+                                    //objects = GameObject.Find("Objects");
                                     gameOver = 0;
+                                    curPlayer = 1;
                                     winStr = "";
                                 }
                                 else
@@ -143,7 +147,7 @@ public class Main : MonoBehaviour {
                             }
                         }
 
-                        tipPos = finger.TipPosition;
+                        tipPos = finger.TipPosition; // get the position of the index finger
                         currentPos = handController.transform.TransformPoint(tipPos.ToUnityScaled());
                         snapPos = SnapToGrid(currentPos);
                         Vector3 gridPos = UnityToArrayIndex(snapPos);
@@ -271,10 +275,11 @@ public class Main : MonoBehaviour {
     }
     void Restart()
     {
-        logic.board = new int[4,4,4];
+        //logic.reInitializeArray();
+        //logic.board = new int[4,4,4];
         winStr = "Game Over!\n " + curPlayer + " wins!";
         gameOver = 1;
-        curPlayer = 1;
-        objects = GameObject.Find("Objects");
+        //curPlayer = 1;
+        //objects = GameObject.Find("Objects");
     }
 }
