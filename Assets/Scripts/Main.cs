@@ -5,10 +5,10 @@ using Leap;
 public class Main : MonoBehaviour {
 
     public static GameLogic logic = new GameLogic();
-    int[,,] board = new int[4, 4, 4];
-    Controller controller;
-    GameObject cube;
-    GameObject sphere;
+    int[,,] board = new int[4, 4, 4]; // integer array represents the game cube
+    Controller controller; 
+    GameObject cube; // token for one player
+    GameObject sphere; // token for the other player
     GameObject box;
     GameObject objects;
     GameObject handController;
@@ -22,12 +22,14 @@ public class Main : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
+        // get references to the game objects created
         cube = GameObject.Find("Cube");
         box = GameObject.Find("Box");
         objects = GameObject.Find("Objects");
         sphere = GameObject.Find("Sphere");
         handController = GameObject.Find("HandController");
         controller = new Controller();
+        // Enable and configure gesture recognition for the key_tap gesture
         controller.EnableGesture(Gesture.GestureType.TYPE_KEY_TAP);
         controller.Config.SetFloat("Gesture.KeyTap.MinDownVelocity", 20.0f);
         controller.Config.SetFloat("Gesture.KeyTap.HistorySeconds", 0.2f);
@@ -55,9 +57,9 @@ public class Main : MonoBehaviour {
     // Update is called once per frame
     void Update () {
         Frame frame = new Frame();
-        frame = controller.Frame();
-        GestureList gestures = frame.Gestures(lastFrame);
-        lastFrame = frame;
+        frame = controller.Frame(); // each frame object contains a snapshot of the scene's data (i.e. postions, entities) 
+        GestureList gestures = frame.Gestures(lastFrame); //List of the Gesture objects within that frame, note they are not reported as events
+        lastFrame = frame;                                //Instead they are added to the frames that are within the life time of the gesture
         /*
         for (int i = 0; i < gestures.Count; i++)
         {
@@ -88,25 +90,27 @@ public class Main : MonoBehaviour {
 
         //Find the current position of the index finger and display it in a text box
 
-        HandList hands = frame.Hands;
-        Vector3 currentPos; 
-        Vector tipPos; // position of index finger tip
+        HandList hands = frame.Hands; //List of Hand's present in the scene, can recognize up to 5?
+        Vector3 currentPos; //Tuple for the position vector in Unity's coordinates
+        Vector tipPos; // Tuple for the position of index finger tip in Leap Motion coordinates
         foreach (Hand hand in hands)
         {
-            if (hand.IsRight)
+            if (hand.IsRight) //Only recognize a key tap from the right hand
             {
                 foreach (Finger finger in hand.Fingers)
                 {
-                    if ( (int)finger.Type == 1)
+                    if ( (int)finger.Type == 1) // referes to index finger
                     {
                         for (int i = 0; i < gestures.Count; i++)
                         {
                             Gesture gesture = gestures[i];
                             if (gesture.Type == Gesture.GestureType.TYPE_KEY_TAP && gesture.Hands[0].IsRight)
                             {
+                                // tapping will terminate the end game screen and restart the game
                                 if (gameOver == 1)
                                 {
-                                    foreach (Transform child in objects.transform)
+                                    // the Transform refers to the object's position, rotation, scale 
+                                    foreach (Transform child in objects.transform) // basically destroys every object
                                         Destroy(child.gameObject);
                                     logic.reInitializeArray();
                                     //if (objects != null) 
@@ -123,30 +127,32 @@ public class Main : MonoBehaviour {
                                     newCube.transform.rotation = box.transform.rotation;
                                     newCube.transform.parent = box.transform;
                                     */
+                                    // Convert Leap coordinates to Unity coordinates
                                     Vector tapPosition = tap.Position;
-                                    Vector3 correctedPos = handController.transform.TransformPoint(tapPosition.ToUnityScaled());
+                                    Vector3 correctedPos = handController.transform.TransformPoint(tapPosition.ToUnityScaled()); //taken from documentation
                                     //correctedPos.y = correctedPos.y - 1.5f;
                                     //correctedPos.z = correctedPos.z - 0.3f;
                                     //newCube.transform.position = SnapToGrid(correctedPos);
                                     snapPos = SnapToGrid(correctedPos);
-                                    if (snapPos.x > 3f || snapPos.y > 3f || snapPos.z > 3f)
+                                    if (snapPos.x > 3f || snapPos.y > 3f || snapPos.z > 3f) //tapping out side the cube undos the last move
                                     {
-                                        Undo(lastMove);
+                                        Undo(lastMove); // lastMove is the GameObject representing the players token
                                         if (curPlayer == 1)
                                         {
-                                            Debug.Log("hello");
+                                            //Debug.Log("hello");
                                             curPlayer = 2;
                                         }
                                         else
                                             curPlayer = 1;
+                                    }else{
+                                        SpawnObject(curPlayer, snapPos); //placed the corresponding player token at that location
                                     }
-                                    else
-                                        SpawnObject(curPlayer, snapPos);
-                                    Vector3 arrayPos = UnityToArrayIndex(snapPos);
+                                    Vector3 arrayPos = UnityToArrayIndex(snapPos); // to be used in the logic
                                 }
                             }
                         }
-
+                        
+                        // live display of the index fingers current position (index of 3d array)
                         tipPos = finger.TipPosition; // get the position of the index finger
                         currentPos = handController.transform.TransformPoint(tipPos.ToUnityScaled());
                         snapPos = SnapToGrid(currentPos);
@@ -167,6 +173,8 @@ public class Main : MonoBehaviour {
 
     void SpawnObject(int player, Vector3 position)
     {
+        // inputs the player number, and the vector3 representing the Unity coordinate of cube where the token is to be placed 
+        // Calls other methods to validate the move, and to check winning conditions after placing the new player token
         GameObject newObject;
         Vector3 arrayPos = UnityToArrayIndex(snapPos);
         if (player == 1)
@@ -198,15 +206,17 @@ public class Main : MonoBehaviour {
 
             curPlayer = 1;
         }
-        newObject.transform.parent = objects.transform;
-        newObject.transform.position = position;
+        newObject.transform.parent = objects.transform; // objects variable is a reference to the collective set of player tokens
+        // the statement above simply assigns the newObject to be child of the "objects" set
+        newObject.transform.position = position; //assign the required position 
         lastMove = newObject;
 
     }
 
     public Vector3 UnityToArrayIndex(Vector3 pv) {
-        // Function inputs are the Unity coordinates of a point
-        // Maps and outputs the corresponding array coordinate (integer)
+        // Function inputs are the Unity coordinates of a the kay tap location
+        // Maps and outputs the corresponding array coordinate (integer),
+        // 
 
         int x = (int)(5.2 / 3 * (pv.x + 0.9));
         int y = (int)(5.2 / 3 * (pv.y + 0.9));
@@ -218,13 +228,15 @@ public class Main : MonoBehaviour {
 
     public Vector3 SnapToGrid(Vector3 tapPosition)
     {
+        // input Unity coordinate of the key tap location
         float x = tapPosition.x;
         float y = tapPosition.y;
         float z = tapPosition.z;
         float newX = 0;
         float newY = 0;
         float newZ = 0;
-
+        
+        // assign the required coordinate depending on the interval
         if (-1.4f < x && x < -0.6f)
             newX = -0.9f;
         else if (-0.6f < x && x < 0f)
@@ -262,8 +274,9 @@ public class Main : MonoBehaviour {
         return newPosition;
     }
     public string winStr = "";
-    void OnGUI()
+    void OnGUI() // this is another main loop, responsible for GUI
     {
+        
         GUI.Box(new Rect(60, 60, 120, 120), "Current Player: " + curPlayer + "\n"
             + xStr + 
             "\n" + yStr + "\n" + zStr + "\n" + winStr);
