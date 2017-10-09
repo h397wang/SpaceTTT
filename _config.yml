@@ -1,0 +1,8 @@
+title: Spacettt
+description: Implementing Lean Motion Control to play 3D TTT, UofT Hacks
+google_analytics: 
+show_downloads: true
+theme: jekyll-theme-hacker
+
+gems:
+  - jekyll-mentions
